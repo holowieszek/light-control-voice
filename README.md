@@ -7,7 +7,7 @@ Control light with your voice, Raspberry and Javascript!
     <img src="https://i.imgur.com/jS6vGKz.png">
 </p>
 
-Before you're gonna plug your lamp to the relay just check is relay working
+Before you're gonna plug your lamp to the relay just check whether relay works
 
 ```
 sudo python
