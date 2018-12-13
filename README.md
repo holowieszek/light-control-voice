@@ -23,7 +23,7 @@ GPIO.cleanup()
 3. npm run dev
 
 4. set endpoint in client/voice.js
-5. run client/index.js
+5. run client/index.html
 
 ## Youtube
 [![demo - youtube](https://img.youtube.com/vi/N1DaYdtqpoY/maxresdefault.jpg)](https://www.youtube.com/watch?v=N1DaYdtqpoY "demo - youtube")
