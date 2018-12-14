@@ -1,0 +1,12 @@
+{
+    "watch": ["src"],
+    "ext": "ts",
+    "exec": "ts-node --project tsconfig.json ./server.ts",
+    "env": {
+        "MONGO_USER": "",
+        "MONGO_PWD": "",
+        "MONGO_HOST": "",
+        "MONGO_PORT": "",
+        "MONGO_DB": ""
+    }
+}

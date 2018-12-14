@@ -5,5 +5,6 @@ export class appRouting {
     
     routes(app): void {
         app.route('/light').post(this.appController.GPIO);
+        app.route('/create').post(this.appController.createAction);
     }
 }

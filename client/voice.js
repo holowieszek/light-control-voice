@@ -42,7 +42,7 @@ class Voice {
 
     apiCall(word) {
         axios.post('http://192.168.88.42:8080/light', {
-            message: word,
+            keyword: word,
         })
         .then(response => {
             console.log(response.data);

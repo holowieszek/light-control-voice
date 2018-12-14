@@ -1,54 +1,25 @@
 import { Request, Response } from 'express';
-import * as Promise from 'bluebird';
+import { AppService } from '../services/app.service';
 
-var gpio = require('rpi-gpio');
-
+const gpio = require('onoff').Gpio;
 
 export default class appController {
-    private pinStatus: boolean = false;
+    appService: AppService = new AppService();
 
-    GPIO = (req: Request, res: Response): void => {
-        if(req.body.message == "WŁĄCZ") {
-            this.turnOn()
-                .then(result => {
-                    return res.status(201).json(result);
-                })
-                .catch(err => {
-                    return res.status(201).json(err);
-                });
-        } else if (req.body.message == "WYŁĄCZ") {
-            this.turnOff()
-                .then(result => {
-                    return res.status(201).json(result);
-                })
-                .catch(err => {
-                    return res.status(201).json(err);
-                });
-        } else {
-            return res.status(201).json('something else');
-        }
+    GPIO = (req: Request, res: Response) => {
+        this.appService.findAction(req.body.keyword)
+            .then(result => this.callAction(result))
+            .finally(() => res.status(201).json(true))
     }
 
-    private turnOn = (): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            if (!this.pinStatus) {
-                this.pinStatus = true;
-                gpio.setup(18, gpio.DIR_OUT);
-                resolve('Turned on!');
-            }
-            reject('Is turned on!');
-        });
+    callAction = (result: { pin: number, direction: string, value: number }) => {
+        const action = new gpio(result.pin, result.direction);
+        action.writeSync(result.value);
     }
 
-    private turnOff = (): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            if (this.pinStatus) {
-                this.pinStatus = false;
-                gpio.setup(18, gpio.DIR_IN);
-                resolve('Turned off!');
-            }
-
-            reject('Is turned off!');
-        });
+    createAction = (req: Request, res: Response) => {
+        this.appService.createAction(req)
+            .then(result => res.status(201).json(result))
+            .catch(error => res.status(400).json(error))
     }
 }
