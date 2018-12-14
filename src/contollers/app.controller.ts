@@ -1,25 +1,29 @@
 import { Request, Response } from 'express';
-import { AppService } from '../services/app.service';
+import  AppService from '../services/app.service';
+import { AppInterface as IApp } from '../interfaces/app.interface';
+import { returnResponse } from '../helpers/request.helper';
 
 const gpio = require('onoff').Gpio;
 
 export default class appController {
-    appService: AppService = new AppService();
+    readonly appService: AppService = new AppService();
 
-    GPIO = (req: Request, res: Response) => {
-        this.appService.findAction(req.body.keyword)
-            .then(result => this.callAction(result))
-            .finally(() => res.status(201).json(true))
+    public callGPIO = (req: Request, res: Response) => {
+        const { keyword } = req.body;
+
+        return this.appService.findAction(keyword)
+            .then(this.callAction)
+            .finally(returnResponse(res, 201, true));
     }
 
-    callAction = (result: { pin: number, direction: string, value: number }) => {
-        const action = new gpio(result.pin, result.direction);
-        action.writeSync(result.value);
+    private callAction ({ pin, direction, value }: IApp) {
+        const action = new gpio(pin, direction);
+        return action.writeSync(value);
     }
 
-    createAction = (req: Request, res: Response) => {
-        this.appService.createAction(req)
-            .then(result => res.status(201).json(result))
-            .catch(error => res.status(400).json(error))
+    public createAction = (req: Request, res: Response) => {
+        return this.appService.createAction(req)
+            .then(result => returnResponse(res, 201, result))
+            .catch(error => returnResponse(res, 400, error))
     }
 }
